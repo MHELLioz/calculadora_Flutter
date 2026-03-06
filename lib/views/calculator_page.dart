@@ -20,12 +20,17 @@ class _CalculatorPageState extends State<CalculatorPage> {
   // Variable para almacenar el resultado
   String _resultado = '0';
 
-  /// Realiza la operación seleccionada
+/// Realiza la operación seleccionada
   void _realizarOperacion(String operacion) {
     try {
-      // Parsear los números ingresados
+      // Parsear el primer número (siempre es requerido)
       double num1 = double.parse(_numero1Controller.text);
-      double num2 = double.parse(_numero2Controller.text);
+      
+      // Parsear el segundo número SOLO si no está vacío (previene errores en Cuadrado y Raíz)
+      double num2 = _numero2Controller.text.isNotEmpty 
+          ? double.parse(_numero2Controller.text) 
+          : 0;
+          
       double resultado;
 
       // Ejecutar la operación correspondiente
@@ -42,6 +47,16 @@ class _CalculatorPageState extends State<CalculatorPage> {
         case 'dividir':
           resultado = _calculator.dividir(num1, num2);
           break;
+        // --- NUEVAS OPERACIONES ---
+        case 'modulo':
+          resultado = _calculator.modulo(num1, num2); 
+          break;
+        case 'cuadrado':
+          resultado = _calculator.cuadrado(num1); // Solo usa num1
+          break;
+        case 'raiz_cuadrada':
+          resultado = _calculator.raizCuadrada(num1); // Solo usa num1
+          break;
         default:
           resultado = 0;
       }
@@ -53,7 +68,7 @@ class _CalculatorPageState extends State<CalculatorPage> {
     } catch (e) {
       // Manejar errores (números inválidos, división por cero, etc.)
       setState(() {
-        _resultado = 'Error: ${e.toString()}';
+        _resultado = 'Error: Revisa los números ingresados';
       });
     }
   }
@@ -151,7 +166,8 @@ class _CalculatorPageState extends State<CalculatorPage> {
     );
   }
 
-  /// Construye los botones de operaciones
+
+/// Construye los botones de operaciones
   Widget _buildBotonesOperaciones() {
     return Column(
       children: [
@@ -179,11 +195,43 @@ class _CalculatorPageState extends State<CalculatorPage> {
               label: 'Multiplicar',
               onPressed: () => _realizarOperacion('multiplicar'),
             ),
+            //Cambié el ícono de android por un ícono de división 
             _buildBotonOperacion(
-              icono: Icons.android,
+              icono: Icons.safety_divider, 
               label: 'Dividir',
               onPressed: () => _realizarOperacion('dividir'),
             ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        // --- NUEVOS BOTONES ---
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildBotonOperacion(
+              icono: Icons.percent,
+              label: 'Módulo',
+              onPressed: () => _realizarOperacion('modulo'),
+            ),
+            _buildBotonOperacion(
+              icono: Icons.crop_square,
+              label: 'Cuadrado',
+              onPressed: () => _realizarOperacion('cuadrado'),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildBotonOperacion(
+              icono: Icons.square_foot,
+              label: 'Raíz Cuadrada',
+              onPressed: () => _realizarOperacion('raiz_cuadrada'),
+            ),
+            //Expanded vacío para que el botón de Raíz no ocupe toda la pantalla
+            // y mantenga el mismo tamaño que los demás.
+            const Expanded(child: SizedBox()), 
           ],
         ),
       ],
