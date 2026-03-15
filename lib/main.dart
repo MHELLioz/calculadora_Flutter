@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'views/calculator_page.dart';
+import 'views/home_page.dart';
 
 /// Punto de entrada principal de la aplicación
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const CalculatorPage(),
+      home: const HomePage(),
     );
   }
 }
